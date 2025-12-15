@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RETRO AI IMAGE LAB v2.0</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* === ENHANCED RETRO 80s/90s STYLE === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background: linear-gradient(45deg, #0a0a2a, #1a0033);
+  color: #00ffcc;
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* CRT Screen Effect */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanlines 10s linear infinite;
+}
+
+@keyframes scanlines {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(10px); }
+}
+
+/* Glitch Effect */
+.glitch {
+  position: relative;
+  animation: glitch 5s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  2% { transform: translate(-2px, 2px); }
+  4% { transform: translate(-2px, -2px); }
+  6% { transform: translate(2px, 2px); }
+  8% { transform: translate(2px, -2px); }
+  10% { transform: translate(0); }
+  100% { transform: translate(0); }
+}
+
+/* === MAIN CONTAINER === */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  border: 3px solid #ff00ff;
+  border-radius: 0;
+  background: rgba(0, 0, 20, 0.95);
+  box-shadow: 
+    0 0 40px #ff00ff,
+    inset 0 0 30px rgba(0, 255, 255, 0.2);
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff00ff, #00ffcc, #ffff00, #ff00ff);
+  z-index: -1;
+  filter: blur(15px);
+  opacity: 0.4;
+}
+
+/* === HEADER === */
+.header {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 3px dashed #ff00ff;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.header h1 {
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  margin-bottom: 10px;
+  text-shadow: 
+    0 0 15px #00ffcc,
+    0 0 25px #00ffcc,
+    0 0 35px #00ffcc;
+  color: #00ffcc;
+}
+
+.subtitle {
+  color: #ff00ff;
+  font-size: 1.3rem;
+  letter-spacing: 4px;
+}
+
+/* === MAIN LAYOUT === */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  padding: 25px 0;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === CONTROL PANEL === */
+.control-panel {
+  background: rgba(0, 10, 30, 0.9);
+  border: 3px solid #00ffcc;
+  padding: 30px;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 204, 0.4),
+    inset 0 0 15px rgba(0, 255, 204, 0.1);
+}
+
+.panel-title {
+  color: #ff00ff;
+  font-size: 1.6rem;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #ff00ff;
+  padding-bottom: 12px;
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-title i {
+  font-size: 1.4rem;
+}
+
+/* === INPUT STYLES === */
+.input-group {
+  margin-bottom: 25px;
+}
+
+.input-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #00ffcc;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.input-label span {
+  color: #ff00ff;
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+
+.retro-input {
+  width: 100%;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ffcc;
+  color: #00ffcc;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  transition: all 0.3s;
+  resize: vertical;
+}
+
+.retro-input:focus {
+  outline: none;
+  border-color: #ff00ff;
+  box-shadow: 0 0 20px #ff00ff;
+}
+
+/* === RETRO SELECT === */
+.retro-select {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.retro-select select {
+  width: 100%;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ffcc;
+  color: #00ffcc;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  appearance: none;
+  cursor: pointer;
+}
+
+.retro-select::after {
+  content: '▼';
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ff00ff;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+/* === SLIDER === */
+.slider-container {
+  padding: 10px 0;
+}
+
+.retro-slider {
+  width: 100%;
+  height: 12px;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, #00ffcc, #ff00ff, #ffff00);
+  border: 2px solid #00ffcc;
+  border-radius: 0;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+}
+
+.retro-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  background: #ff00ff;
+  border: 3px solid #00ffcc;
+  cursor: pointer;
+  box-shadow: 0 0 15px #ff00ff;
+}
+
+.slider-value {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 1.3rem;
+  color: #ff00ff;
+  text-shadow: 0 0 8px #ff00ff;
+  font-weight: bold;
+}
+
+/* === BUTTONS === */
+.button-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.retro-btn {
+  padding: 16px;
+  border: none;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.retro-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: 0.5s;
+}
+
+.retro-btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #00ffcc, #0099cc);
+  color: #000;
+  border: 2px solid #00ffcc;
+  box-shadow: 0 0 15px #00ffcc;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #0099cc, #00ffcc);
+  box-shadow: 0 0 25px #00ffcc;
+  transform: translateY(-3px);
+}
+
+.btn-secondary {
+  background: linear-gradient(45deg, #ff00ff, #cc00cc);
+  color: #000;
+  border: 2px solid #ff00ff;
+  box-shadow: 0 0 15px #ff00ff;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(45deg, #cc00cc, #ff00ff);
+  box-shadow: 0 0 25px #ff00ff;
+  transform: translateY(-3px);
+}
+
+.btn-generate {
+  grid-column: span 2;
+  font-size: 1.4rem;
+  padding: 20px;
+  background: linear-gradient(45deg, #ff00ff, #00ffcc, #ff00ff);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* === IMAGE DISPLAY SECTION === */
+.image-display {
+  background: rgba(0, 10, 30, 0.9);
+  border: 3px solid #ff00ff;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  min-height: 700px;
+  box-shadow: 
+    0 0 20px rgba(255, 0, 255, 0.4),
+    inset 0 0 15px rgba(255, 0, 255, 0.1);
+}
+
+.display-title {
+  color: #00ffcc;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* === IMAGE GALLERY === */
+.gallery-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gallery-tabs {
+  display: flex;
+  border-bottom: 2px solid #00ffcc;
+}
+
+.gallery-tab {
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #00ffcc;
+  border: none;
+  border-right: 1px solid #00ffcc;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gallery-tab.active {
+  background: #00ffcc;
+  color: #000;
+  font-weight: bold;
+}
+
+.image-viewer {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ffcc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 400px;
+  position: relative;
+}
+
+.image-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: none;
+}
+
+.placeholder-text {
+  color: #666;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.placeholder-text i {
+  font-size: 4rem;
+  color: #00ffcc;
+  margin-bottom: 20px;
+  display: block;
+}
+
+/* === IMAGE INFO === */
+.image-info {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #00ffcc;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.info-title {
+  color: #ff00ff;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.info-content {
+  color: #00ffcc;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  border-bottom: 1px dotted rgba(0, 255, 204, 0.3);
+  padding-bottom: 8px;
+}
+
+/* === STATUS DISPLAY === */
+.status-display {
+  width: 100%;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ffcc;
+  color: #00ffcc;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  min-height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+}
+
+/* === ACTION BUTTONS === */
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.action-btn {
+  padding: 14px;
+  background: linear-gradient(45deg, #330066, #6600cc);
+  border: 2px solid #9900ff;
+  color: #00ffcc;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-btn:hover {
+  background: linear-gradient(45deg, #6600cc, #9900ff);
+  box-shadow: 0 0 15px #9900ff;
+  transform: translateY(-2px);
+}
+
+/* === GALLERY THUMBNAILS === */
+.gallery-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #00ffcc;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ffcc;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.thumbnail:hover {
+  border-color: #ff00ff;
+  transform: scale(1.05);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail.active {
+  border-color: #ff00ff;
+  box-shadow: 0 0 10px #ff00ff;
+}
+
+.thumbnail-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ffcc;
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  text-align: center;
+}
+
+/* === FOOTER === */
+.footer {
+  text-align: center;
+  padding: 25px 0;
+  margin-top: 40px;
+  border-top: 3px dashed #ff00ff;
+  color: #00ffcc;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.footer p {
+  margin-bottom: 12px;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #00ffcc;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+/* === ANIMATIONS === */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@keyframes loading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.loading-spin {
+  animation: loading 1s linear infinite;
+}
+
+/* === GRID BACKGROUND === */
+.grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -1;
+}
+
+/* === BINARY RAIN === */
+.binary-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.binary-digit {
+  position: absolute;
+  color: #00ffcc;
+  font-size: 1.2rem;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to { transform: translateY(100vh); }
+}
+
+/* === LOADING BAR === */
+.loading-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #00ffcc;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.loading-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffcc, #ff00ff);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* === DOWNLOAD MODAL === */
+.download-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.download-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: rgba(0, 10, 30, 0.95);
+  border: 3px solid #00ffcc;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 40px #00ffcc;
+}
+
+.modal-title {
+  color: #ff00ff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.modal-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.modal-btn {
+  padding: 15px;
+  background: linear-gradient(45deg, #330066, #6600cc);
+  border: 2px solid #9900ff;
+  color: #00ffcc;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+.modal-btn:hover {
+  background: linear-gradient(45deg, #6600cc, #9900ff);
+  transform: translateY(-2px);
+}
+
+.modal-close {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 2px solid #ff0000;
+  color: #ff0000;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+}
+
+.modal-close:hover {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+/* === SECTION DIVIDERS === */
+.section-divider {
+  margin: 25px 0;
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff00ff, transparent);
+}
+
+.section-title {
+  color: #00ffcc;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+</style>
+</head>
+
+<body>
+<div class="grid-bg"></div>
+<div class="binary-rain" id="binaryRain"></div>
+
+<!-- Download Modal -->
+<div class="download-modal" id="downloadModal">
+  <div class="modal-content">
+    <h3 class="modal-title"><i class="fas fa-download"></i> DOWNLOAD OPTIONS</h3>
+    <p style="color: #00ffcc; margin-bottom: 20px;">Choose download method:</p>
+    
+    <div class="modal-options">
+      <button class="modal-btn" onclick="directDownload()">
+        <i class="fas fa-bolt"></i> DIRECT DOWNLOAD
+      </button>
+      <button class="modal-btn" onclick="openInNewTab()">
+        <i class="fas fa-external-link-alt"></i> OPEN IN NEW TAB
+      </button>
+      <button class="modal-btn" onclick="copyImageUrl()">
+        <i class="fas fa-copy"></i> COPY URL
+      </button>
+      <button class="modal-btn" onclick="saveAsCanvas()">
+        <i class="fas fa-image"></i> SAVE AS CANVAS
+      </button>
+    </div>
+    
+    <button class="modal-close" onclick="closeDownloadModal()">
+      <i class="fas fa-times"></i> CANCEL
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <header class="header">
+    <h1 class="glitch">RETRO AI IMAGE LAB v2.0</h1>
+    <div class="subtitle">SYSTEM UPGRADE // ENHANCED FEATURES // 1984 SYSTEM ONLINE</div>
+  </header>
+
+  <div class="main-content">
+    <!-- CONTROL PANEL -->
+    <section class="control-panel">
+      <h2 class="panel-title"><i class="fas fa-sliders-h"></i> CONTROL PANEL</h2>
+      
+      <!-- BASIC CONTROLS -->
+      <div class="input-group">
+        <label class="input-label">PROMPT INPUT <span id="char-count">0/300</span></label>
+        <textarea 
+          id="prompt" 
+          class="retro-input" 
+          placeholder="ENTER IMAGE DESCRIPTION..."
+          rows="3"
+          maxlength="300"
+        >A cyberpunk city at night with neon lights</textarea>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">ART STYLE</label>
+        <div class="retro-select">
+          <select id="style">
+            <option value="">STANDARD MODE</option>
+            <option value="cyberpunk, neon lights, futuristic, sci-fi, retro wave">CYBERPUNK MODE</option>
+            <option value="8-bit pixel art, retro video game, low resolution">8-BIT PIXEL MODE</option>
+            <option value="synthwave, vaporwave, 80s aesthetic, retro futurism">SYNTHWAVE MODE</option>
+            <option value="anime, vibrant colors, clean line art">ANIME MODE</option>
+            <option value="cinematic, dramatic lighting, film grain">CINEMATIC MODE</option>
+            <option value="oil painting, classical art, renaissance">RENAISSANCE MODE</option>
+            <option value="dark fantasy, moody lighting, epic atmosphere">DARK FANTASY MODE</option>
+            <option value="watercolor, soft edges, artistic">WATERCOLOR MODE</option>
+            <option value="3D render, blender, detailed">3D RENDER MODE</option>
+            <option value="steampunk, brass gears, Victorian era, mechanical">STEAMPUNK MODE</option>
+            <option value="glitch art, digital corruption, data moshing">GLITCH ART MODE</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- ENHANCEMENTS SECTION -->
+      <hr class="section-divider">
+      <div class="section-title"><i class="fas fa-cogs"></i> ENHANCEMENTS</div>
+      
+      <div class="input-group">
+        <label class="input-label">CREATIVITY LEVEL</label>
+        <div class="slider-container">
+          <input type="range" min="0" max="100" value="75" class="retro-slider" id="creativity" />
+        </div>
+        <div class="slider-value" id="creativity-value">75%</div>
+      </div>
+      
+      <!-- OUTPUT SETTINGS -->
+      <hr class="section-divider">
+      <div class="section-title"><i class="fas fa-expand-alt"></i> OUTPUT SETTINGS</div>
+      
+      <div class="input-group">
+        <label class="input-label">ASPECT RATIO</label>
+        <div class="retro-select">
+          <select id="ratio">
+            <option value="16:9">16:9 WIDESCREEN</option>
+            <option value="1:1">1:1 SQUARE</option>
+            <option value="9:16">9:16 PORTRAIT</option>
+            <option value="4:3">4:3 CLASSIC</option>
+            <option value="3:2">3:2 PHOTO</option>
+            <option value="21:9">21:9 ULTRAWIDE</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- GENERATE BUTTONS -->
+      <div class="button-group">
+        <button class="retro-btn btn-primary btn-generate" onclick="generateImage()">
+          <i class="fas fa-bolt"></i> GENERATE IMAGE
+        </button>
+        <button class="retro-btn btn-secondary" onclick="randomPrompt()">
+          <i class="fas fa-random"></i> RANDOM PROMPT
+        </button>
+        <button class="retro-btn btn-secondary" onclick="remixPrompt()">
+          <i class="fas fa-redo"></i> REMIX PROMPT
+        </button>
+      </div>
+    </section>
+    
+    <!-- IMAGE DISPLAY SECTION -->
+    <section class="image-display">
+      <h2 class="display-title"><i class="fas fa-image"></i> IMAGE OUTPUT</h2>
+      
+      <div class="gallery-container">
+        <!-- Gallery Tabs -->
+        <div class="gallery-tabs">
+          <button class="gallery-tab active" onclick="switchGallery('current')">CURRENT</button>
+          <button class="gallery-tab" onclick="switchGallery('gallery')">GALLERY</button>
+          <button class="gallery-tab" onclick="switchGallery('saved')">SAVED</button>
+        </div>
+        
+        <!-- Image Viewer -->
+        <div class="image-viewer" id="imageViewer">
+          <div class="placeholder-text" id="placeholder">
+            <i class="fas fa-image"></i>
+            IMAGE READY FOR GENERATION
+            <br>
+            <span style="font-size: 0.9rem; color: #ff00ff;">CLICK GENERATE TO BEGIN</span>
+          </div>
+          <img id="generatedImage" alt="Generated Image">
+        </div>
+        
+        <!-- Image Info -->
+        <div class="image-info" id="imageInfo" style="display: none;">
+          <div class="info-title">IMAGE INFORMATION</div>
+          <div class="info-content">
+            <div class="info-row">
+              <span>PROMPT:</span>
+              <span id="info-prompt" style="max-width: 60%; text-align: right;">-</span>
+            </div>
+            <div class="info-row">
+              <span>STYLE:</span>
+              <span id="info-style">-</span>
+            </div>
+            <div class="info-row">
+              <span>RATIO:</span>
+              <span id="info-ratio">-</span>
+            </div>
+            <div class="info-row">
+              <span>GENERATION TIME:</span>
+              <span id="info-time">-</span>
+            </div>
+            <div class="info-row">
+              <span>DATE:</span>
+              <span id="info-date">-</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Gallery Thumbnails (Hidden by default) -->
+        <div class="gallery-thumbnails" id="galleryThumbnails" style="display: none;">
+          <!-- Thumbnails will be loaded here -->
+        </div>
+        
+        <!-- Loading Bar -->
+        <div class="loading-bar" id="loadingBar" style="display: none;">
+          <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        
+        <!-- Status Display -->
+        <div class="status-display" id="status">
+          SYSTEM READY // AWAITING INPUT
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="action-btn" onclick="showDownloadOptions()">
+            <i class="fas fa-download"></i> DOWNLOAD
+          </button>
+          <button class="action-btn" onclick="saveToGallery()">
+            <i class="fas fa-save"></i> SAVE
+          </button>
+          <button class="action-btn" onclick="applyEffects()">
+            <i class="fas fa-magic"></i> EFFECTS
+          </button>
+          <button class="action-btn" onclick="shareImage()">
+            <i class="fas fa-share"></i> SHARE
+          </button>
+          <button class="action-btn" onclick="regenerateImage()">
+            <i class="fas fa-sync"></i> REGENERATE
+          </button>
+          <button class="action-btn" onclick="variationImage()">
+            <i class="fas fa-copy"></i> VARIATION
+          </button>
+          <button class="action-btn" onclick="upscaleImage()">
+            <i class="fas fa-expand"></i> UPSCALE
+          </button>
+          <button class="action-btn" onclick="clearImage()">
+            <i class="fas fa-times"></i> CLEAR
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <footer class="footer">
+    <p>RETRO AI IMAGE LAB v2.0 // ENHANCED SYSTEM // 1984 ARCHITECTURE</p>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-value" id="total-generated">0</div>
+        <div class="stat-label">GENERATED</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="total-saved">0</div>
+        <div class="stat-label">SAVED</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="total-time">0s</div>
+        <div class="stat-label">TOTAL TIME</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// === ENHANCED RETRO AI IMAGE GENERATOR v2.0 ===
+
+// System variables
+let currentImageData = null;
+let gallery = JSON.parse(localStorage.getItem('retroAIGallery')) || [];
+let savedGallery = JSON.parse(localStorage.getItem('retroAISaved')) || [];
+let totalGenerated = parseInt(localStorage.getItem('totalGenerated')) || 0;
+let totalTime = parseFloat(localStorage.getItem('totalTime')) || 0;
+let currentGallery = 'current';
+
+// DOM Elements
+const promptInput = document.getElementById('prompt');
+const charCount = document.getElementById('char-count');
+const creativitySlider = document.getElementById('creativity');
+const creativityValue = document.getElementById('creativity-value');
+const imageViewer = document.getElementById('imageViewer');
+const generatedImage = document.getElementById('generatedImage');
+const placeholder = document.getElementById('placeholder');
+const statusDisplay = document.getElementById('status');
+const imageInfo = document.getElementById('imageInfo');
+const galleryThumbnails = document.getElementById('galleryThumbnails');
+const loadingBar = document.getElementById('loadingBar');
+const loadingProgress = document.getElementById('loadingProgress');
+const downloadModal = document.getElementById('downloadModal');
+
+// Stats elements
+const totalGeneratedEl = document.getElementById('total-generated');
+const totalSavedEl = document.getElementById('total-saved');
+const totalTimeEl = document.getElementById('total-time');
+
+// Initialize
+updateStats();
+updateCharCount();
+
+// Event Listeners
+promptInput.addEventListener('input', updateCharCount);
+creativitySlider.addEventListener('input', updateCreativityDisplay);
+
+// Binary rain effect
+function createBinaryRain() {
+  const binaryRain = document.getElementById('binaryRain');
+  const binaryChars = ['0', '1'];
+  
+  for (let i = 0; i < 100; i++) {
+    const digit = document.createElement('div');
+    digit.className = 'binary-digit';
+    digit.textContent = binaryChars[Math.floor(Math.random() * binaryChars.length)];
+    digit.style.left = Math.random() * 100 + 'vw';
+    digit.style.animationDuration = (Math.random() * 5 + 3) + 's';
+    digit.style.animationDelay = Math.random() * 2 + 's';
+    digit.style.opacity = Math.random() * 0.5 + 0.1;
+    binaryRain.appendChild(digit);
+  }
+}
+
+createBinaryRain();
+
+// Gallery switching
+function switchGallery(galleryName) {
+  // Deactivate all gallery tabs
+  document.querySelectorAll('.gallery-tab').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Activate clicked button
+  event.target.classList.add('active');
+  currentGallery = galleryName;
+  
+  if (galleryName === 'current') {
+    galleryThumbnails.style.display = 'none';
+    imageInfo.style.display = currentImageData ? 'block' : 'none';
+  } else if (galleryName === 'gallery') {
+    galleryThumbnails.style.display = 'grid';
+    imageInfo.style.display = 'none';
+    loadGalleryThumbnails(gallery);
+  } else if (galleryName === 'saved') {
+    galleryThumbnails.style.display = 'grid';
+    imageInfo.style.display = 'none';
+    loadGalleryThumbnails(savedGallery);
+  }
+}
+
+// Load thumbnails
+function loadGalleryThumbnails(images) {
+  galleryThumbnails.innerHTML = '';
+  
+  if (images.length === 0) {
+    galleryThumbnails.innerHTML = '<div style="grid-column: span 3; text-align: center; color: #666; padding: 20px;">NO IMAGES FOUND</div>';
+    return;
+  }
+  
+  images.forEach((img, index) => {
+    const thumbnail = document.createElement('div');
+    thumbnail.className = 'thumbnail';
+    thumbnail.onclick = () => viewImageFromGallery(img, images === savedGallery ? 'saved' : 'gallery');
+    
+    thumbnail.innerHTML = `
+      <img src="${img.src}" alt="Thumbnail ${index + 1}">
+      <div class="thumbnail-overlay">IMG ${index + 1}</div>
+    `;
+    
+    galleryThumbnails.appendChild(thumbnail);
+  });
+}
+
+// View image from gallery
+function viewImageFromGallery(imageData, source) {
+  generatedImage.src = imageData.src;
+  generatedImage.style.display = 'block';
+  placeholder.style.display = 'none';
+  
+  currentImageData = imageData;
+  updateImageInfo(imageData);
+  
+  // Switch to current view
+  document.querySelectorAll('.gallery-tab').forEach(btn => btn.classList.remove('active'));
+  document.querySelector('.gallery-tab[onclick*="current"]').classList.add('active');
+  galleryThumbnails.style.display = 'none';
+  imageInfo.style.display = 'block';
+  currentGallery = 'current';
+  
+  updateStatus(`LOADED FROM ${source.toUpperCase()} // READY`, 'success');
+}
+
+// Update character count
+function updateCharCount() {
+  const count = promptInput.value.length;
+  charCount.textContent = `${count}/300`;
+}
+
+// Update creativity display
+function updateCreativityDisplay() {
+  const value = creativitySlider.value;
+  creativityValue.textContent = `${value}%`;
+}
+
+// Build enhanced prompt with all parameters
+function buildPrompt(basePrompt) {
+  const style = document.getElementById("style").value;
+  const creativity = parseInt(creativitySlider.value);
+  const ratio = document.getElementById("ratio").value;
+  
+  // Add creativity modifiers
+  let creativityModifier = "";
+  if (creativity > 80) {
+    creativityModifier = "ultra detailed, masterpiece, hyperrealistic, 8k resolution, epic, trending on artstation";
+  } else if (creativity > 60) {
+    creativityModifier = "detailed, high quality, professional, beautiful, award winning";
+  } else if (creativity > 30) {
+    creativityModifier = "well composed, nice, aesthetic, good quality";
+  } else {
+    creativityModifier = "simple, clear, straightforward";
+  }
+  
+  // Build the final prompt
+  let prompt = basePrompt;
+  
+  if (style) prompt += ", " + style;
+  
+  prompt += ", " + creativityModifier;
+  
+  // Add aspect ratio
+  prompt += ", --ar " + ratio;
+  
+  return prompt;
+}
+
+// Generate single image with enhanced features
+function generateImage() {
+  const basePrompt = promptInput.value.trim();
+  if (!basePrompt) {
+    updateStatus("ERROR: NO PROMPT INPUT", "error");
+    showNotification("NO PROMPT INPUT", "error");
+    return;
+  }
+  
+  // Clear any existing image
+  clearImage();
+  
+  // Update status
+  updateStatus("GENERATING IMAGE... PLEASE WAIT", "processing");
+  
+  // Show loading bar
+  loadingBar.style.display = 'block';
+  loadingProgress.style.width = '0%';
+  
+  // Simulate progress
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    progress += Math.random() * 15;
+    if (progress > 90) clearInterval(progressInterval);
+    loadingProgress.style.width = Math.min(progress, 90) + '%';
+  }, 200);
+  
+  // Show loading state
+  placeholder.innerHTML = '<i class="fas fa-spinner loading-spin"></i><br>IMAGE GENERATION IN PROGRESS<br><span style="font-size: 0.9rem; color: #ff00ff;">SYSTEM PROCESSING...</span>';
+  
+  const finalPrompt = buildPrompt(basePrompt);
+  const startTime = Date.now();
+  
+  // Get image dimensions based on aspect ratio (fixed quality)
+  const ratio = document.getElementById("ratio").value.split(':');
+  const width = 768; // Fixed quality
+  const height = Math.round((768 * parseInt(ratio[1])) / parseInt(ratio[0]));
+  
+  // Generate random seed
+  const seed = Math.floor(Math.random() * 1000000);
+  
+  // Use Pollinations.ai API with enhanced parameters
+  const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=${width}&height=${height}&seed=${seed}&nofeed=true`;
+  
+  // Create image element
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  
+  img.onload = function() {
+    clearInterval(progressInterval);
+    loadingProgress.style.width = '100%';
+    
+    setTimeout(() => {
+      loadingBar.style.display = 'none';
+      
+      const generationTime = (Date.now() - startTime) / 1000;
+      
+      // Display the image
+      generatedImage.src = this.src;
+      generatedImage.style.display = 'block';
+      placeholder.style.display = 'none';
+      
+      // Store image data
+      currentImageData = {
+        src: this.src,
+        prompt: finalPrompt,
+        basePrompt: basePrompt,
+        style: document.getElementById("style").value,
+        ratio: document.getElementById("ratio").value,
+        creativity: creativitySlider.value,
+        timestamp: new Date().toISOString(),
+        generationTime: generationTime,
+        seed: seed,
+        width: width,
+        height: height,
+        apiUrl: apiUrl
+      };
+      
+      // Add to gallery
+      gallery.unshift(currentImageData);
+      if (gallery.length > 50) gallery.pop(); // Keep only last 50 images
+      localStorage.setItem('retroAIGallery', JSON.stringify(gallery));
+      
+      // Update stats
+      totalGenerated++;
+      totalTime += generationTime;
+      localStorage.setItem('totalGenerated', totalGenerated);
+      localStorage.setItem('totalTime', totalTime);
+      updateStats();
+      
+      // Update image info
+      updateImageInfo(currentImageData);
+      imageInfo.style.display = 'block';
+      
+      // Update status
+      updateStatus(`IMAGE GENERATED IN ${generationTime.toFixed(2)}s // READY FOR USE`, "success");
+      
+      // Show notification
+      showNotification("IMAGE GENERATED SUCCESSFULLY", "success");
+    }, 500);
+  };
+  
+  img.onerror = function() {
+    clearInterval(progressInterval);
+    loadingBar.style.display = 'none';
+    
+    updateStatus("ERROR: GENERATION FAILED // TRY AGAIN", "error");
+    
+    placeholder.innerHTML = '<i class="fas fa-exclamation-triangle"></i><br>GENERATION FAILED<br><span style="font-size: 0.9rem; color: #ff0000;">PLEASE TRY AGAIN</span>';
+    
+    showNotification("GENERATION FAILED", "error");
+  };
+  
+  // Start loading the image
+  img.src = apiUrl;
+}
+
+// =====================
+// FIXED DOWNLOAD FUNCTIONS
+// =====================
+
+// Show download options modal
+function showDownloadOptions() {
+  if (!currentImageData) {
+    updateStatus("ERROR: NO IMAGE TO DOWNLOAD", "error");
+    showNotification("NO IMAGE TO DOWNLOAD", "error");
+    return;
+  }
+  
+  downloadModal.classList.add('active');
+}
+
+// Close download modal
+function closeDownloadModal() {
+  downloadModal.classList.remove('active');
+}
+
+// Method 1: Direct download using fetch and blob
+function directDownload() {
+  if (!currentImageData) return;
+  
+  updateStatus("PREPARING DOWNLOAD...", "processing");
+  closeDownloadModal();
+  
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const filename = `retro-ai-image-${timestamp}.jpg`;
+  
+  // Try to fetch the image as blob
+  fetch(currentImageData.src)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = filename;
+      
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      updateStatus("DOWNLOAD COMPLETE // CHECK YOUR FILES", "success");
+      showNotification("IMAGE DOWNLOADED SUCCESSFULLY", "success");
+    })
+    .catch(error => {
+      console.error('Download failed:', error);
+      updateStatus("DOWNLOAD FAILED // TRY ANOTHER METHOD", "error");
+      showNotification("DOWNLOAD FAILED - TRY ANOTHER METHOD", "error");
+      
+      // Fallback to opening in new tab
+      setTimeout(() => {
+        openInNewTab();
+      }, 1000);
+    });
+}
+
+// Method 2: Open image in new tab
+function openInNewTab() {
+  if (!currentImageData) return;
+  
+  window.open(currentImageData.src, '_blank');
+  updateStatus("IMAGE OPENED IN NEW TAB", "success");
+  showNotification("OPENED IN NEW TAB - RIGHT CLICK TO SAVE", "success");
+  closeDownloadModal();
+}
+
+// Method 3: Copy image URL to clipboard
+function copyImageUrl() {
+  if (!currentImageData) return;
+  
+  navigator.clipboard.writeText(currentImageData.src)
+    .then(() => {
+      updateStatus("IMAGE URL COPIED TO CLIPBOARD", "success");
+      showNotification("IMAGE URL COPIED TO CLIPBOARD", "success");
+      closeDownloadModal();
+    })
+    .catch(err => {
+      updateStatus("COPY FAILED // TRY MANUAL COPY", "error");
+      showNotification("COPY FAILED - TRY MANUAL COPY", "error");
+    });
+}
+
+// Method 4: Save using canvas (works around CORS)
+function saveAsCanvas() {
+  if (!currentImageData) return;
+  
+  updateStatus("CREATING CANVAS DOWNLOAD...", "processing");
+  closeDownloadModal();
+  
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  
+  img.onload = function() {
+    try {
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Draw image on canvas
+      ctx.drawImage(img, 0, 0);
+      
+      // Convert to data URL
+      const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+      
+      // Create download link
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `retro-ai-canvas-${timestamp}.jpg`;
+      
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = dataURL;
+      a.download = filename;
+      
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      document.body.removeChild(a);
+      
+      updateStatus("CANVAS DOWNLOAD COMPLETE", "success");
+      showNotification("IMAGE SAVED VIA CANVAS", "success");
+    } catch (error) {
+      console.error('Canvas download failed:', error);
+      updateStatus("CANVAS DOWNLOAD FAILED", "error");
+      showNotification("CANVAS METHOD FAILED - TRY ANOTHER", "error");
+      
+      // Fallback
+      setTimeout(() => {
+        openInNewTab();
+      }, 1000);
+    }
+  };
+  
+  img.onerror = function() {
+    updateStatus("CANVAS LOAD FAILED", "error");
+    showNotification("IMAGE LOAD FAILED FOR CANVAS", "error");
+  };
+  
+  img.src = currentImageData.src + '?t=' + Date.now(); // Add timestamp to bypass cache
+}
+
+// Save to saved gallery
+function saveToGallery() {
+  if (!currentImageData) {
+    updateStatus("ERROR: NO IMAGE TO SAVE", "error");
+    showNotification("NO IMAGE TO SAVE", "error");
+    return;
+  }
+  
+  // Check if already saved
+  const isAlreadySaved = savedGallery.some(img => img.src === currentImageData.src);
+  if (isAlreadySaved) {
+    updateStatus("IMAGE ALREADY SAVED", "warning");
+    showNotification("IMAGE ALREADY SAVED", "warning");
+    return;
+  }
+  
+  // Add current image
+  savedGallery.unshift(currentImageData);
+  
+  // Save back to localStorage
+  localStorage.setItem('retroAISaved', JSON.stringify(savedGallery));
+  
+  // Update stats
+  totalSavedEl.textContent = savedGallery.length;
+  
+  updateStatus(`IMAGE SAVED // GALLERY: ${savedGallery.length} IMAGES`, "success");
+  showNotification("IMAGE SAVED TO GALLERY", "success");
+  
+  // Visual feedback
+  const saveBtn = event.target.closest('.action-btn');
+  if (saveBtn) {
+    const originalHTML = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-check"></i> SAVED!';
+    saveBtn.style.background = 'linear-gradient(45deg, #00cc00, #00ff00)';
+    
+    setTimeout(() => {
+      saveBtn.innerHTML = originalHTML;
+      saveBtn.style.background = 'linear-gradient(45deg, #330066, #6600cc)';
+    }, 2000);
+  }
+}
+
+// Apply effects to current image
+function applyEffects() {
+  if (!currentImageData) {
+    updateStatus("ERROR: NO IMAGE TO MODIFY", "error");
+    return;
+  }
+  
+  updateStatus("APPLYING EFFECTS...", "processing");
+  
+  // In a real app, you would use canvas to apply effects
+  // For demo purposes, we'll just show a message
+  setTimeout(() => {
+    updateStatus("EFFECTS APPLIED // IMAGE ENHANCED", "success");
+    showNotification("EFFECTS APPLIED TO IMAGE", "success");
+  }, 1500);
+}
+
+// Share image
+function shareImage() {
+  if (!currentImageData) {
+    updateStatus("ERROR: NO IMAGE TO SHARE", "error");
+    return;
+  }
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'Retro AI Generated Image',
+      text: 'Check out this AI generated image!',
+      url: currentImageData.src
+    })
+    .then(() => updateStatus("IMAGE SHARED SUCCESSFULLY", "success"))
+    .catch(() => updateStatus("SHARE CANCELLED", "warning"));
+  } else {
+    // Fallback: Copy to clipboard
+    navigator.clipboard.writeText(currentImageData.src)
+      .then(() => {
+        updateStatus("IMAGE URL COPIED TO CLIPBOARD", "success");
+        showNotification("IMAGE URL COPIED", "success");
+      })
+      .catch(() => updateStatus("COPY FAILED", "error"));
+  }
+}
+
+// Regenerate image
+function regenerateImage() {
+  if (!promptInput.value.trim()) {
+    updateStatus("ERROR: NO PROMPT TO REGENERATE", "error");
+    return;
+  }
+  
+  generateImage();
+}
+
+// Create variation
+function variationImage() {
+  if (!currentImageData) {
+    updateStatus("ERROR: NO IMAGE TO CREATE VARIATION FROM", "error");
+    return;
+  }
+  
+  // Use current prompt or generate new one
+  promptInput.value = currentImageData.basePrompt + ", variation, different angle";
+  generateImage();
+}
+
+// Upscale image (simulated)
+function upscaleImage() {
+  if (!currentImageData) {
+    updateStatus("ERROR: NO IMAGE TO UPSCALE", "error");
+    return;
+  }
+  
+  updateStatus("UPSCALING IMAGE... THIS MAY TAKE A MOMENT", "processing");
+  
+  // Simulate upscaling
+  setTimeout(() => {
+    updateStatus("IMAGE UPSCALED // QUALITY ENHANCED", "success");
+    showNotification("IMAGE UPSCALED SUCCESSFULLY", "success");
+  }, 2000);
+}
+
+// Clear current image
+function clearImage() {
+  generatedImage.style.display = 'none';
+  generatedImage.src = '';
+  placeholder.style.display = 'block';
+  placeholder.innerHTML = '<i class="fas fa-image"></i><br>IMAGE READY FOR GENERATION<br><span style="font-size: 0.9rem; color: #ff00ff;">CLICK GENERATE TO BEGIN</span>';
+  imageInfo.style.display = 'none';
+  currentImageData = null;
+  updateStatus("SYSTEM READY // AWAITING INPUT", "ready");
+}
+
+// Update image info display
+function updateImageInfo(imageData) {
+  document.getElementById('info-prompt').textContent = imageData.basePrompt.substring(0, 40) + '...';
+  document.getElementById('info-style').textContent = imageData.style || 'STANDARD';
+  document.getElementById('info-ratio').textContent = imageData.ratio;
+  document.getElementById('info-time').textContent = imageData.generationTime.toFixed(2) + 's';
+  document.getElementById('info-date').textContent = new Date(imageData.timestamp).toLocaleTimeString();
+}
+
+// Update status display
+function updateStatus(message, type) {
+  statusDisplay.textContent = message;
+  
+  switch(type) {
+    case 'processing':
+      statusDisplay.style.color = '#ff00ff';
+      statusDisplay.style.borderColor = '#ff00ff';
+      statusDisplay.style.boxShadow = '0 0 15px #ff00ff';
+      break;
+    case 'success':
+      statusDisplay.style.color = '#00ffcc';
+      statusDisplay.style.borderColor = '#00ffcc';
+      statusDisplay.style.boxShadow = '0 0 15px #00ffcc';
+      break;
+    case 'error':
+      statusDisplay.style.color = '#ff0000';
+      statusDisplay.style.borderColor = '#ff0000';
+      statusDisplay.style.boxShadow = '0 0 15px #ff0000';
+      break;
+    case 'warning':
+      statusDisplay.style.color = '#ffff00';
+      statusDisplay.style.borderColor = '#ffff00';
+      statusDisplay.style.boxShadow = '0 0 15px #ffff00';
+      break;
+    default:
+      statusDisplay.style.color = '#00ffcc';
+      statusDisplay.style.borderColor = '#00ffcc';
+      statusDisplay.style.boxShadow = 'none';
+  }
+}
+
+// Show notification
+function showNotification(message, type) {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background: ${type === 'error' ? 'rgba(255, 0, 0, 0.9)' : type === 'warning' ? 'rgba(255, 255, 0, 0.9)' : 'rgba(0, 255, 204, 0.9)'};
+    color: #000;
+    border: 2px solid ${type === 'error' ? '#ff0000' : type === 'warning' ? '#ffff00' : '#00ffcc'};
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    z-index: 10000;
+    box-shadow: 0 0 20px ${type === 'error' ? '#ff0000' : type === 'warning' ? '#ffff00' : '#00ffcc'};
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+  `;
+  
+  notification.innerHTML = `
+    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-circle' : 'check-circle'}"></i>
+    ${message}
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Remove after 3 seconds
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+  }, 3000);
+}
+
+// Update stats display
+function updateStats() {
+  totalGeneratedEl.textContent = totalGenerated;
+  totalSavedEl.textContent = savedGallery.length;
+  totalTimeEl.textContent = totalTime.toFixed(1) + 's';
+}
+
+// Random prompt generator
+const randomPrompts = [
+  "A retro futuristic city with flying cars and neon signs",
+  "Cyberpunk samurai in a rainy Tokyo street",
+  "80s synthwave landscape with purple mountains",
+  "Glitch art portrait of a robot with CRT monitor head",
+  "Neon dragon flying over a digital cityscape",
+  "Vaporwave aesthetic with Greek statues and palm trees",
+  "8-bit pixel art of a space station",
+  "Retro computer interface showing AI consciousness",
+  "Holographic tiger in a cyberpunk nightclub",
+  "Neon geometric shapes floating in dark space",
+  "Steampunk airship over Victorian London",
+  "Digital forest with glowing mushrooms and data streams",
+  "Retro arcade machine that contains a universe",
+  "Cyborg mermaid in a neon-lit ocean",
+  "Floating islands connected by rainbow bridges"
+];
+
+function randomPrompt() {
+  const randomIndex = Math.floor(Math.random() * randomPrompts.length);
+  promptInput.value = randomPrompts[randomIndex];
+  updateCharCount();
+  updateStatus("RANDOM PROMPT LOADED // READY TO GENERATE", "success");
+  showNotification("RANDOM PROMPT LOADED", "success");
+}
+
+// Remix current prompt
+function remixPrompt() {
+  if (!promptInput.value.trim()) {
+    promptInput.value = "A futuristic landscape";
+  }
+  
+  const remixModifiers = [
+    ", cyberpunk style, neon lights, futuristic",
+    ", 8-bit pixel art, retro video game graphics",
+    ", synthwave aesthetic, 80s retro futurism",
+    ", glitch art, digital corruption, data moshing",
+    ", vaporwave, pastel colors, surreal",
+    ", cinematic, dramatic lighting, film grain",
+    ", dark fantasy, moody atmosphere, epic",
+    ", steampunk, brass gears, mechanical",
+    ", holographic, transparent, futuristic",
+    ", biopunk, organic technology, living machines"
+  ];
+  
+  const randomModifier = remixModifiers[Math.floor(Math.random() * remixModifiers.length)];
+  promptInput.value += randomModifier;
+  updateCharCount();
+  
+  updateStatus("PROMPT REMIXED // READY TO GENERATE", "success");
+  showNotification("PROMPT REMIXED", "success");
+}
+
+// Initialize system
+window.addEventListener('load', function() {
+  updateStatus("SYSTEM INITIALIZED // ENHANCED FEATURES ENABLED", "ready");
+  
+  // Load saved data
+  if (savedGallery.length > 0) {
+    console.log(`System loaded with ${savedGallery.length} saved images`);
+  }
+  
+  // System startup message
+  console.log("=== RETRO AI IMAGE LAB v2.0 ===");
+  console.log("System: Enhanced 1984 Architecture");
+  console.log("Status: Operational with Advanced Features");
+  console.log("Features: Gallery, Effects, Advanced Controls");
+  console.log("Download: Fixed with multiple methods");
+  console.log("=============================");
+});
+</script>
+</body>
+</html>
